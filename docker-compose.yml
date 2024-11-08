@@ -1,0 +1,33 @@
+# docker-compose.yml
+version: '3'
+services:
+  bind9:
+    image: ubuntu/bind9
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    volumes:
+      - ./bind9:/etc/bind
+    networks:
+      - dns_network
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/html:/usr/share/nginx/html
+    networks:
+      - web_network
+  ftp:
+    image: fauria/vsftpd
+    ports:
+      - "20:20"
+      - "21:21"
+      - "21100-21110:21100-21110"
+    environment:
+      - FTP_USER=ftpuser
+      - FTP_PASS=ftppass
+    volumes:
+      - ./ftp:/home/vsftpd
+    networks:
+      - ftp_network
